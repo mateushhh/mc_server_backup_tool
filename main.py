@@ -1,5 +1,6 @@
 import datetime
 import zipfile
+import os
 import config
 
 DATETIME_STR = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -18,13 +19,19 @@ try:
     backup = zipfile.ZipFile(BACKUP_PATH, mode="w", compression=zipfile.ZIP_STORED)
 
     for file in config.FILES_TO_BACKUP:
-        backup.write(config.SERVER_DIRECTORY+"/"+file)
+        backup.write(config.SERVER_DIRECTORY+"/"+file, config.ROOT_FOLDER+"/"+file)
         print_progress(file)
 
-    # TODO Finish adding directories to the zipfile
     for directory in config.DIRECTORIES_TO_BACKUP:
-        backup.mkdir(directory)
-        # Get inside the directory and recursively create and open each subdirectory and add each file
+        source_dir = os.path.join(config.SERVER_DIRECTORY, directory)
+
+        for root, dirs, files in os.walk(source_dir):
+            for file in files:
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, config.SERVER_DIRECTORY)
+                zip_path = os.path.join(config.ROOT_FOLDER, rel_path)
+
+                backup.write(full_path, zip_path)
         print_progress(directory)
 
     print("Backup complete \"" + BACKUP_PATH + "\" created")

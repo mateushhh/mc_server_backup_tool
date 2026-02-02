@@ -18,3 +18,4 @@ SERVER_CONFIGURATION = ["eula.txt", "server.properties", "start.bat", "server-ic
 
 DIRECTORIES_TO_BACKUP = ["world", "versions", "squaremap", "skins", "mods", "libraries", "config", ".fabric"]
 FILES_TO_BACKUP = [SERVER_FILENAME] + SERVER_CONFIGURATION
+ROOT_FOLDER = "minecraft_server"
